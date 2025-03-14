@@ -1,7 +1,9 @@
 # CSE517 Project: Extracting Prompts by Inverting LLM Outputs
 
 This is the repo for CSE 517 win25 project. Our group members includes Yongkang Li, Shengqi Hang, Yicong Chen.
+
 Link to paper: https://arxiv.org/abs/2405.15012
+
 Link to original repo: https://github.com/collinzrj/output2prompt/tree/main
 
 ## Requirements
@@ -22,11 +24,14 @@ If you encountered problems while running the code, please make sure your `trans
 
 Also, you may need to run:
 
-```import nltk
+```python
+import nltk
 nltk.download('punkt_tab')
 ```
 
-## Training
+You need to provide your OpenAI key in `main.py` in order to perform cosine similarity calculations during the testing phase.
+
+## Training and Testing
 
 To train the model(s) in the paper, run this command:
 
