@@ -1,6 +1,7 @@
 # Extracting Prompts by Inverting LLM Outputs (System Prompt Section)
 
 Link to paper: https://arxiv.org/abs/2405.15012
+
 Link to original repository: https://github.com/collinzrj/output2prompt
 
 ## Requirements
@@ -83,7 +84,3 @@ python main.py test system_prompts synthetic 15
 Note that the number of outputs must be an integer in the range 1-16, where 16 corresponds to the original test setting (i.e., 16 outputs per query, 64 outputs in total). 
 
 For convenience, you can enter your OpenAI key and run `test.sh` directly, which includes all experiments related to system prompts in our paper.
-
-## Pre-trained Models
-
-The pre-trained models are in the `inverters` folder
