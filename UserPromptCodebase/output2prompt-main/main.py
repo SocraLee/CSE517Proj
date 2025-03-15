@@ -116,28 +116,13 @@ def test(model_path, dataset_path,number_of_outputs = 64):
     model.mode = mode
     tokenizer: T5Tokenizer = T5Tokenizer.from_pretrained('t5-base')
     eval_ds = load_from_disk(dataset_path)
-    
-    if model_path == 'inverters/gpt3-5_synthetic_prompt_model':
-        if number_of_outputs != 64:
-            number_of_outputs /= 4
-            print(f"Transferring noo to {number_of_outputs}")
-            eval_ds = eval_ds.map(
-            lambda x: {
-                'result_list': sum(
-                    (x['result_list'][i*16 : i*16 + number_of_outputs] for i in range(4)),
-                    []
-                )
-            },
+    #print(eval_ds[0])
+    if number_of_outputs != 64:
+        print(f"Transferring noo to {number_of_outputs}")
+        eval_ds = eval_ds.map(
+            lambda x: {'result_list': x['result_list'][:number_of_outputs]},
             batched=False
-            )
-    else:
-        if number_of_outputs != 64:
-            print(f"Transferring noo to {number_of_outputs}")
-            eval_ds = eval_ds.map(
-                lambda x: {'result_list': x['result_list'][:number_of_outputs]},
-                batched=False
-            )
-
+        )
     trainer = Prompt2OutputTrainer(
         model=model,
         args=experiment.training_args,
