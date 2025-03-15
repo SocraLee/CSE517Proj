@@ -47,7 +47,7 @@ If you use this work, please cite the original paper:
 
 ```bibtex
 @inproceedings{zhang-etal-2024-extracting,
-    title = "Extracting Prompts by Inverting {LLM} Outputs",
+    title = "Extracting Prompts by Inverting LLM Outputs",
     author = "Zhang, Collin  and
       Morris, John Xavier  and
       Shmatikov, Vitaly",
