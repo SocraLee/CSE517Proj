@@ -1,6 +1,7 @@
-# Extracting Prompts by Inverting LLM Outputs
+# Extracting Prompts by Inverting LLM Outputs (System Prompt Section)
 
 Link to paper: https://arxiv.org/abs/2405.15012
+Link to original repository: https://github.com/collinzrj/output2prompt
 
 ## Requirements
 
@@ -16,7 +17,25 @@ pip install .
 ```
 
 ## Troubleshooting
-If you encountered problems while running the code, please make sure your `transformers` library version is 4.36.0, if it is too new, there will be problem 
+1. Please make sure your `transformers` library version is 4.36.0 and `accelarate` library version is 0.28.0, if it is too new, there will be problem.
+
+2. When running for the first time, you may need to execute the following commands in your Python shell:
+
+```python
+import nltk
+nltk.download('punkt_tab')
+```
+
+3. If you receive a prompt, you may need to install the sentencepiece library as follows:
+```sentencepiece
+pip install sentencepiece
+```
+
+4. You need to set the OpenAI key as an environment variable in order to compute the cosine similarity:
+
+```bash
+export OPENAI_API_KEY="your openai key"
+```
 
 ## Usage
 If you want to use this model to extract prompt of a GPTs (LLM app). You can ask these questions to the GPTs:
@@ -33,32 +52,7 @@ Then run `python main.py test_sample` to get the result.
 
 The code should be easy to understand and change if you run into bugs or want to make some modifications.
 
-## Training
-
-To train the model(s) in the paper, run this command:
-
-```train
-# system prompts
-python main.py train system_prompts synthetic
-# user prompts
-python main.py train user_prompts synthetic
-```
-
 ## Evaluation
-
-inverters
-```
-user_prompts
-system_prompts
-```
-
-user prompts dataset
-```
-chat_instruction2m
-lm_instruction2m
-sharegpt
-unnatural
-```
 
 system prompts dataset
 ```
@@ -67,20 +61,28 @@ real
 awesome
 ```
 
-To evalute my model on the datasets, run
+To evaluate the model on the system prompt datasets, run
 
 ```eval
 # system prompts
 python main.py test system_prompts synthetic
 python main.py test system_prompts real
 python main.py test system_prompts awesome
-# user prompts
-python main.py test user_prompts chat_instruction2m
-python main.py test user_prompts sharegpt
-python main.py test user_prompts unnatural
 # test on single sample
 python main.py test_sample
 ```
+
+## New Experiment
+
+We introduced a new experiment that changes the number of outputs during the testing phase. You can specify the number of outputs by adding an extra command-line argument, for example:
+
+```bash
+python main.py test system_prompts synthetic 15
+```
+
+Note that the number of outputs must be an integer in the range 1-16, where 16 corresponds to the original test setting (i.e., 16 outputs per query, 64 outputs in total). 
+
+For convenience, you can enter your OpenAI key and run `test.sh` directly, which includes all experiments related to system prompts in our paper.
 
 ## Pre-trained Models
 
