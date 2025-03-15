@@ -1,4 +1,4 @@
-accelerate==0.28.0
+accelerate
 bert_score
 datasets
 evaluate
