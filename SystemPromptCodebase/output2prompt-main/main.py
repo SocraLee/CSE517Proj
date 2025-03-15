@@ -78,7 +78,7 @@ def train(dataset_path):
     trainer.args.metric_for_best_model = None
     trainer.train()
 
-def test(model_path, dataset_path):
+def test(model_path, dataset_path, number_of_outputs):
     with open('prompt2output/config.json') as f:
         config_dict = json.load(f)
     config_dict['use_wandb'] = False
@@ -103,6 +103,19 @@ def test(model_path, dataset_path):
     model.mode = mode
     tokenizer: T5Tokenizer = T5Tokenizer.from_pretrained('t5-base')
     eval_ds = load_from_disk(dataset_path)
+
+    if number_of_outputs != 16:
+        print(f"Change number of outputs to {number_of_outputs}")
+        eval_ds = eval_ds.map(
+            lambda x: {
+                'result_list': sum(
+                    (x['result_list'][i*16 : i*16 + number_of_outputs] for i in range(4)),
+                    []
+                )
+            },
+            batched=False
+        )
+
     trainer = Prompt2OutputTrainer(
         model=model,
         args=experiment.training_args,
@@ -110,6 +123,9 @@ def test(model_path, dataset_path):
         eval_dataset=eval_ds,
         data_collator=Prompt2OutputCollator(),
     )
+
+    trainer.enable_emb_cos_sim_metric()
+
     trainer.tokenizer = tokenizer
     trainer.embedder_tokenizer = tokenizer
     trainer.args.metric_for_best_model = None
@@ -242,13 +258,23 @@ Travel Laundry Tips: Going on a trip and need laundry advice? I can offer tips f
 16: I help with laundry care; ChatGPT helps with everything else!""".split("\n")
 
 if __name__ == '__main__':
+
+    # import nltk
+    # nltk.download('punkt_tab')
+    
     mode = sys.argv[1]
     model = sys.argv[2]
     dataset = sys.argv[3]
+
+    if len(sys.argv) > 4:
+        number_of_outputs = int(sys.argv[4])
+    else:
+        number_of_outputs = 16
+
     if mode == 'train':
         train(dataset_dict[dataset][0])
     elif mode == 'test_sample':
         print("prompt_outputs len", len(prompt_outputs))
         test_sample('inverters/gpt3-5_synthetic_prompt_model', prompt_outputs)
     else:
-        test(inverters[model], dataset_dict[dataset][1])
+        test(inverters[model], dataset_dict[dataset][1], number_of_outputs)
